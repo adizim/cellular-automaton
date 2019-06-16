@@ -32,17 +32,17 @@ def decimal_to_key(x):
     return tuple(bin(x)[2:].zfill(3))
 
 
-def calculate_state(state, rule_map):
-    new_state = [rule_map[tuple(["0"] + state[:2])]]
+def calculate_state(state, rule_map, wolfram):
+    new_state = [rule_map[tuple(state[-1:] + state[:2])]] if wolfram else [rule_map[tuple(["0"] + state[:2])]]
 
     for i in range(len(state) - 2):
         new_state += [rule_map[tuple(state[i:i + 3])]]
 
-    new_state += [rule_map[tuple(state[len(state) - 2:] + ["0"])]]
+    new_state += [rule_map[tuple(state[-2:] + state[:1])]] if wolfram else [rule_map[tuple(state[-2:] + ["0"])]]
     return new_state
 
 
-def generate(rule, steps, file=None):
+def generate(rule, steps, file=None, wolfram=False):
     """
     Generate the image from given rule number and steps
     and print it to the console.
@@ -71,7 +71,7 @@ def generate(rule, steps, file=None):
         print(" ".join(state) + "\n")
 
     for _ in range(steps):
-        state = calculate_state(state, rule_map)
+        state = calculate_state(state, rule_map, wolfram)
         if file:
             file.write(" ".join(state) + "\n")
         else:
@@ -84,9 +84,9 @@ if __name__ == '__main__':
     parser.add_argument('steps', help='Number of Steps', type=int)
     parser.add_argument('-f', '--file', help='Save to a file', type=argparse.FileType('w'), default=stdout)
     parser.add_argument('-w', '--wolfram', help='Produce a Wolfram Atlas correct solution using infinite grid',
-                        action='store_true')
+                        action='store_true', default=False)
     args = parser.parse_args()
-    rule, steps, file = args.rule, args.steps, args.file
+    rule, steps, file, wolfram = args.rule, args.steps, args.file, args.wolfram
 
     assert 0 <= rule <= 255 and steps >= 0
-    generate(rule, steps, file)
+    generate(rule, steps, file, wolfram)
