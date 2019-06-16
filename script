@@ -1,7 +1,0 @@
-#!/bin/bash
-rm -rf examples
-mkdir -p examples && cd examples
-for i in 18 45 73 105 150 225
-do
-   python3 ../cellular.py $i 500 -f rule$i.pbm
-done
