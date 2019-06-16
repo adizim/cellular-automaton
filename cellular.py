@@ -63,12 +63,19 @@ def generate(rule, steps, file=None):
     brule = decimal_to_binary(rule)
     rule_map = {tuple(decimal_to_key(i)): brule[7 - i] for i in range(8)}
     state = ["0"] * steps + ["1"] + ["0"] * steps
-    file.write(f"P1 {2 * steps + 1} {steps + 1}" + "\n")
-    file.write(" ".join(state) + "\n")
+    if file:
+        file.write(f"P1 {2 * steps + 1} {steps + 1}" + "\n")
+        file.write(" ".join(state) + "\n")
+    else:
+        print(f"P1 {2 * steps + 1} {steps + 1}" + "\n")
+        print(" ".join(state) + "\n")
 
     for _ in range(steps):
         state = calculate_state(state, rule_map)
-        file.write(" ".join(state) + "\n")
+        if file:
+            file.write(" ".join(state) + "\n")
+        else:
+            print(" ".join(state) + "\n")
 
 
 if __name__ == '__main__':
